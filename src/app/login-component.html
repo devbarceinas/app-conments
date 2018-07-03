@@ -20,22 +20,21 @@
         color: #36528C;
       }
 
+      paper-card {
+        padding: 40px;
+      }
+
       iron-icon, div[suffix] {
         color: var(--color-iron-icon);
         margin-right: 12px;
       }
 
       .button__space {
-        padding: 20px;
+        padding: 50px;
       }
 
       .session__personal {
         background-color: #F04A58;
-        color: var(--button-session);
-      }
-
-      .session__facebook {
-        background-color: #36528C;
         color: var(--button-session);
       }
 
@@ -84,14 +83,10 @@
           <paper-button
             id="loginButton"
             on-click="login"
+            class="session__personal"
             raised
             disabled>
             Entrar
-          </paper-button>
-          <paper-button
-            class="session__facebook"
-            raised>
-            Entrar con Facebook
           </paper-button>
         </div>
       </div>
@@ -139,10 +134,12 @@
         }
 
         validate(event) {
-          if (this.useremail != '' && this.password != '') {
+          if (this.useremail !== '' && this.password !== '') {
             this.$.loginButton.removeAttribute('disabled');
+            this.$.loginButton.classList.add('session__personal');
           } else {
             this.$.loginButton.setAttribute('disabled', 'true');
+            this.$.loginButton.classList.remove('session__personal');
           }
         }
 
