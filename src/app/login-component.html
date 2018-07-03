@@ -1,0 +1,135 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="login-component">
+  <template>
+    <style>
+
+      :host {
+        --color-iron-icon: hsl(0, 0%, 50%);
+        --button-session: #FFFFFF;
+      }
+
+      .card__title {
+        text-align: center;
+        color: #36528C;
+      }
+
+      iron-icon, div[suffix] {
+        color: var(--color-iron-icon);
+        margin-right: 12px;
+      }
+
+      .button__space {
+        padding: 20px;
+      }
+
+      .session__personal {
+        background-color: #F04A58;
+        color: var(--button-session);
+      }
+
+      .session__facebook {
+        background-color: #36528C;
+        color: var(--button-session);
+      }
+
+    </style>
+
+    <iron-ajax
+      id="http"
+      url="data/userdata.json"
+      handle-as="json"
+      on-response="_handleResponse"
+      debounce-duration=300>
+    </iron-ajax>
+
+    <paper-card>
+      <div class="card-content">
+        <h2 class="card__title">LOGIN</h2>
+        <paper-input
+          label="Useremail"
+          auto-validate
+          error-message="The password is required"
+          on-invalid-changed="validate">
+          <iron-icon
+            icon="icons:account-circle"
+            slot="prefix">
+          </iron-icon>
+        </paper-input>
+        <paper-input
+          type="password"
+          label="Password"
+          error-message="The password is required"
+          on-invalid-changed="validate">
+          <iron-icon
+            icon="icons:lock"
+            slot="prefix">
+          </iron-icon>
+        </paper-input>
+      </div>
+      <div class="card-actions">
+        <div class="button__space">
+          <paper-button
+            id="loginButton"
+            on-click="login"
+            class="session__personal"
+            raised
+            disabled>
+            Entrar
+          </paper-button>
+          <paper-button
+            class="session__facebook"
+            raised>
+            Entrar con Facebook
+          </paper-button>
+        </div>
+      </div>
+    </paper-card>
+
+  </template>
+  <script>
+    (function loginComponent(customElements) {
+
+      'use strict';
+
+      class LoginComponent extends Polymer.Element {
+        static get is() { return 'login-component'; }
+        static get properties() {
+          return {
+            useremail: {
+              type: String,
+              value: ''
+            },
+            password: {
+              type: String,
+              value: ''
+            },
+            users: {
+              type: Array,
+              value: []
+            }
+          };
+        }
+
+        valiedate() {
+          if (this.useremail !== '' && this.password !== '') {
+            this.$.loginButton.removeAttribute('disabled');
+          } else {
+            this.$.loginButton.setAttribute('disabled', 'true');
+            this.$.querySelector('.session__personal').removeClass('session_personal');
+          }
+        }
+
+      }
+
+      customElements.define(LoginComponent.is, LoginComponent);
+
+    })(window.customElements);
+  </script>
+</dom-module>
