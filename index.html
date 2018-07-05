@@ -7,11 +7,16 @@
     <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <link rel="import" href="src/app/app-shell.html">
-
+    <link rel="import" href="/src/app/post-item.html">
+    <link rel="import" href="/src/app/post-list.html">
+    <link rel="import" href="/src/app/user-list.html">
+    <link rel="import" href="/src/app/loader-spinner.html">
     <style>
         body {
+            padding:20px;
             margin: 0;
             font-family: 'Roboto', sans-serif;
+            background: silver;
         }
     </style>
 </head>
@@ -19,6 +24,118 @@
 <body>
 
     <app-shell></app-shell>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+        }
+        .post__main_content{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(0deg, #062f4f 80%, #000000 80%);
+        }
+        .page{
+            display: flex;
+            align-self:flex-end;
+            width:100%;
+            height: 90vh;
+            max-width: 900px;
+        }
+        .post__aside{
+            padding: 24px 0 20px 8px;
+            width: 240px;
+        }
+        .page__content{
+            display: flex;
+            flex-direction: column;
+            flex-grow:2;
+            padding: 18px 8px;
+            margin: 0 8px 0 18px;
+            color:#fafafa;
+            border-radius: 8px 8px 0 0;
+            background: #06406d;
+        }
+        .post__list{
+            flex-grow: 2;
+            overflow-y: auto;
+            color:#333;
+            /*background:aqua;*/
+        }
+    </style>
+        <loader-spinner id="loader_spinner"></loader-spinner>
+        <div class="post__main_content">
+            <!-- PAG -->
+            <div class="page">
+                <aside class="post__aside">
+                    <user-list id="user_list" ></user-list>
+                </aside>
+                <div class="page__content">
+                    <div>EL FORMULARIO</div>
+                    <hr>
+                    <div class="post__list">
+                        <post-list id="post_list"></post-list>
+                    </div>
+                </div>
+            </div>
+            <!-- END PAG -->
+        </div>
 
+    <script>
+        // USER EXAMPLE
+        const loader   = document.getElementById('loader_spinner');
+        const postList = document.getElementById('post_list');
+        const userList = document.getElementById('user_list');
+        //- EL LISTENER VA ANTES DE SELECCIONAR
+        userList.addEventListener('user-selected', function( event ){
+            postList.list = [
+                {
+                    id:0,
+                    title: "titulo del post",
+                    body: "cuerpo del post",
+                    fecha: "2015-06-11T20:18:47.317326Z",
+                    author: "anuar"
+                },
+                {
+                    id:2,
+                    title: "titulo del post 2",
+                    body: "cuerpo del post asdadasdasd",
+                    fecha: "2015-07-11T20:18:47.317326Z",
+                    author: "anuar"
+                }
+            ]
+            if( event.detail.userName == 'Mario' ){
+                postList.list = [
+                    {
+                        id:0,
+                        title: "titulo del post",
+                        body: "cuerpo del post",
+                        fecha: "2015-06-11T20:18:47.317326Z",
+                        author: "anuar"
+                    }
+                ]
+            }
+            console.info('Se ha selecionado a +event.detail.userName', event.detail );
+        });
+
+        userList.list = [
+            {
+                id:0,
+                user: "Anuar",
+                mail: "anuarharb@mail.com"
+            },
+            {
+                id:3,
+                user: "Mario",
+                mail: "mario123@mail.com"
+            }
+        ];
+        //- para selecionar un item directamente por su ID
+        //userList.selectedId = 3;
+        setTimeout(function(){
+            loader_spinner.setAttribute( 'paused', true );
+        }, 1000);
+    </script>
 </body>
 </html>

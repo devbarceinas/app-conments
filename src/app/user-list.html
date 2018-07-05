@@ -1,0 +1,116 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="/src/app/post-item.html">
+
+<dom-module id="user-list">
+    <template>
+        <style>
+            :host{
+                display: block;
+            }
+            post-item:hover{
+                transform: scale(1.02,1.02);
+                transition: transform .4s;
+                cursor: pointer;
+            }
+            post-item{
+                transition: transform .4s;
+                --post-item-header-font-size: 14px;
+                --post-item-header-bg-color: #f3fafa;
+                --post-item-header-style: {
+                    border-bottom:1px solid #3a3a3a;
+                }
+            }
+            post-item + post-item{
+                margin-top: 16px;
+            }
+            .selected{
+                transform: scale(1.01,1.01);
+                --post-item-header-text-color: white;
+                --post-item-header-bg-color: purple;
+            }
+
+        </style>
+
+        <!-- CONPONENT UI  -->
+        <div id="container">
+            <template id="post_repeat" is="dom-repeat" items="[[list]]" as="user">
+                <post-item
+                    data-id$="[[user.id]]"
+                    on-click="_selectUser"
+                    author="[[user.user]]"
+                    post="[[user.mail]]" >
+                </post-item>
+            </template>
+        </div>
+        <!-- END UI  -->
+    </template>
+    <script>
+        (function(){
+
+            class UserList extends Polymer.Element {
+                static get is() { return 'user-list' }
+                static get properties() {
+                    return {
+                        list: {
+                            type: Array,
+                            observer: '_selectItem'
+                        },
+                        selectedId: {
+                            type: Number,
+                            observer: '_selectItem'
+                        }
+                    }
+                }
+
+                _selectItem( newVal, oldVal ){
+                    if( newVal !== oldVal ){
+                        this.$.post_repeat.render();
+                        let items = this.$.container.querySelectorAll('post-item');
+                        var current = null;
+
+                        for( let item of items ){
+                            if( item.getAttribute('data-id') == newVal ){
+                                current = item;
+                            }
+                        }
+                        if( !current ){
+                            current = items[0];
+                        }
+                        if( current ){
+                            current.click();
+                        }
+                    }
+                }
+
+                _selectUser( event ) {
+                    let items   = this.$.container.querySelectorAll('.selected');
+                    let current = event.target;
+                    
+                    if( current.classList.contains('selected') ){
+                        return false;
+                    }
+
+                    for( let item of items ){
+                        item.classList.toggle('selected');
+                    }
+                    
+                    current.classList.toggle('selected');
+                    
+                    this.dispatchEvent( new CustomEvent('user-selected',
+                        {
+                            detail:{
+                                id: current.getAttribute('data-id'),
+                                userName: current.author,
+                                email: current.post,
+                            },
+                            bubbles:true, composed:true
+                        }
+                    ));
+                }
+            }
+
+            customElements.define( UserList.is, UserList );
+
+        })();
+    </script>
+</dom-module>
