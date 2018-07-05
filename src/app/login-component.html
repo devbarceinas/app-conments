@@ -21,7 +21,7 @@
       }
 
       paper-card {
-        padding: 40px;
+        padding: 16px;
       }
 
       iron-icon, div[suffix] {
@@ -30,12 +30,17 @@
       }
 
       .button__space {
-        padding: 50px;
+        
       }
 
       .session__personal {
         background-color: #F04A58;
         color: var(--button-session);
+      }
+      paper-button.full{
+        display: block;
+        width:100%;
+        text-align: center;
       }
 
     </style>
@@ -83,7 +88,7 @@
           <paper-button
             id="loginButton"
             on-click="login"
-            class="session__personal"
+            class="session__personal full"
             raised
             disabled>
             Entrar
@@ -112,7 +117,9 @@
             },
             users: {
               type: Array,
-              value: []
+              value: [],
+              notify:true,
+              reflectToAttribute:true
             }
           };
         }
@@ -147,7 +154,7 @@
 
         _handleResponse() {
           const response = this.$.http.lastResponse;
-          this.set('users', response);
+          this.set('users', response.filter(item => item !== null));
           // console.log(response[0].password);
         }
 

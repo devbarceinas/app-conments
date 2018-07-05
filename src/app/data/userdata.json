@@ -5,7 +5,13 @@
       "password": "1",
       "address": "6359 Bonita Radial",
       "phone": "1-829-815-9669",
-      "posts": []
+      "posts": [
+        {
+            "title": "At enim nisi pariatur quae illo dolor similique reprehenderit.",
+            "body": "Ipsum repudiandae ut. Quaerat enim et. Dolores eligendi voluptatum ratione veritatis non quia saepe magni.",
+            "date": "2018-07-03T22:48:45.553Z"
+        }
+      ]
     },
     {
         "name": "Devyn Kunde",

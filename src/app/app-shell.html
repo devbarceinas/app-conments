@@ -15,7 +15,7 @@
           align-items: center;
           justify-content: center;
           height: 100vh;
-          background: linear-gradient(0deg, #062f4f 80%, #000000 80%);
+          background: linear-gradient(0deg, lime 80%, aqua 80%);
       }
       .page{
           display: flex;
@@ -27,6 +27,7 @@
       .post__aside{
           padding: 24px 0 20px 8px;
           width: 240px;
+          min-width: 240px;
           overflow-y:auto;
       }
       .page__content{
@@ -37,7 +38,7 @@
           margin: 0 8px 0 18px;
           color:#fafafa;
           border-radius: 8px 8px 0 0;
-          background: #06406d;
+          background: #F633FF;
       }
       .post__list{
           flex-grow: 2;
@@ -63,6 +64,9 @@
       .container.sessionActive + .posts {
         display: block;
       }
+      .current__user_name{
+        font-size: 1.4em;
+      }
 
     </style>
 
@@ -81,11 +85,11 @@
                   <user-list id="user_list" list="[[allUsers]]" on-user-selected="_userSelected"></user-list>
               </aside>
               <div class="page__content">
-                  <template is="dom-if" if="[[_showForm]]">
+                  <template is="dom-if" if="[[showForm]]">
                     <div>EL FORMULARIO</div>
                   </template>
                   <hr>
-                  <div>Post de [[selectedUser.name]]</div>
+                  <div>Post de <strong class="current__user_name">[[selectedUser.name]]</strong></div>
                   <hr>
                   <div class="post__list">
                       <post-list id="post_list" list="[[selectedUser.posts]]"></post-list>
@@ -114,6 +118,10 @@
             },
             allUsers: {
               type: Array
+            },
+            showForm:{
+              type:Boolean,
+              computed: '_showForm(sessionUser, selectedUser)'
             }
           };
         }
@@ -129,19 +137,25 @@
           if (user.length) {
             this.sessionUser = user[0];
             this.selectedUser = user[0];
+            this.$.user_list.selectedId = user[0].email;
             this.$.showPosts.classList.toggle('sessionActive');
+            console.info('allUsers', this.allUsers);
           } else {
             alert('Usuario o password incorretco');
           }
         }
 
         _userSelected(event) {
-          this.selectedUser = this.allUsers.filter(item => item.email === event.detail.email)[0] || {};
-          console.log("click en usuario: ", event.detail, this.allUsers.filter(item => item.email === event.detail.email));
+          console.info('userElected');
+          this.selectedUser = this.allUsers.filter(item => item.email === event.detail.email)[0];
         }
 
-        _showForm() {
-          return this.sessionUser.email === this.selectedUser.email;
+        _showForm(sessionUser,selectedUser ) {
+          let show = false;
+          try{
+            console.info('Show Form', this.sessionUser.email, this.selectedUser.email );
+            show = this.sessionUser.email === this.selectedUser.email? true : false; }catch(err){}
+          return show;
         }
 
       } // end

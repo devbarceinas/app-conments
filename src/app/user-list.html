@@ -57,7 +57,9 @@
                         },
                         selectedId: {
                             type: Number,
-                            observer: '_selectItem'
+                            observer: '_selectItem',
+                            notify:true,
+                            reflectToAttribute:true
                         }
                     }
                 }
