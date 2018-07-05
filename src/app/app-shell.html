@@ -27,7 +27,7 @@
       .post__aside{
           padding: 24px 0 20px 8px;
           width: 240px;
-          overflow-y:auto; 
+          overflow-y:auto;
       }
       .page__content{
           display: flex;
@@ -78,13 +78,17 @@
           <!-- PAG -->
           <div class="page">
               <aside class="post__aside">
-                  <user-list id="user_list" list="[[allUsers]]"></user-list>
+                  <user-list id="user_list" list="[[allUsers]]" on-user-selected="_userSelected"></user-list>
               </aside>
               <div class="page__content">
-                  <div>EL FORMULARIO</div>
+                  <template is="dom-if" if="[[_showForm]]">
+                    <div>EL FORMULARIO</div>
+                  </template>
+                  <hr>
+                  <div>Post de [[selectedUser.name]]</div>
                   <hr>
                   <div class="post__list">
-                      <post-list id="post_list"></post-list>
+                      <post-list id="post_list" list="[[selectedUser.posts]]"></post-list>
                   </div>
               </div>
           </div>
@@ -125,13 +129,22 @@
           if (user.length) {
             this.sessionUser = user[0];
             this.selectedUser = user[0];
-            console.info(this.allUsers);
             this.$.showPosts.classList.toggle('sessionActive');
           } else {
             alert('Usuario o password incorretco');
           }
         }
-      }
+
+        _userSelected(event) {
+          this.selectedUser = this.allUsers.filter(item => item.email === event.detail.email)[0] || {};
+          console.log("click en usuario: ", event.detail, this.allUsers.filter(item => item.email === event.detail.email));
+        }
+
+        _showForm() {
+          return this.sessionUser.email === this.selectedUser.email;
+        }
+
+      } // end
 
       //this.$.loader_spinner.setAttribute('paused', true);
       //this.$.showPosts.classList.toggle('sessionActive');

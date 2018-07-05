@@ -85,7 +85,7 @@
                 _selectUser( event ) {
                     let items   = this.$.container.querySelectorAll('.selected');
                     let current = event.target;
-                    
+
                     if( current.classList.contains('selected') ){
                         return false;
                     }
@@ -93,14 +93,14 @@
                     for( let item of items ){
                         item.classList.toggle('selected');
                     }
-                    
+
                     current.classList.toggle('selected');
-                    
+
                     this.dispatchEvent( new CustomEvent('user-selected',
                         {
                             detail:{
-                                userName: current.name,
-                                email: current.email,
+                                userName: current.author,
+                                email: current.post,
                             },
                             bubbles:true, composed:true
                         }
