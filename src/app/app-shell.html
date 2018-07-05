@@ -6,9 +6,19 @@
   <template>
     <style>
 
+      .container {
+        display: flex;
+        justify-content: center;
+        padding-top: 50px;
+      }
+
     </style>
 
-    <login-component></loginComponent>
+    <div class="container">
+      <login-component
+        on-check-user="_checkUser">
+      </loginComponent>
+    </div>
 
   </template>
   <script>
@@ -22,6 +32,18 @@
           return {
 
           };
+        }
+
+        _checkUser(event) {
+          let userInput = event.detail.useremail;
+          let passInput = event.detail.password;
+          const userValidate = event.detail.data[0].useremail;
+          const passValidate = event.detail.data[0].password
+          if (userInput === userValidate && passInput === passValidate) {
+            console.log('Usuario correcto');
+          } else {
+            console.log('Usuario incorrecto');
+          }
         }
       }
 

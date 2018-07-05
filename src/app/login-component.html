@@ -128,7 +128,8 @@
             composed: true,
             detail: {
               useremail: this.useremail,
-              password: this.password
+              password: this.password,
+              data: this.$.http.lastResponse
             }
           }));
         }
@@ -146,6 +147,7 @@
         _handleResponse() {
           const response = this.$.http.lastResponse;
           this.set('users', response);
+          // console.log(response[0].password);
         }
 
       }
