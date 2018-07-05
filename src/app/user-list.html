@@ -35,10 +35,10 @@
         <div id="container">
             <template id="post_repeat" is="dom-repeat" items="[[list]]" as="user">
                 <post-item
-                    data-id$="[[user.id]]"
+                    data-id$="[[user.email]]"
                     on-click="_selectUser"
-                    author="[[user.user]]"
-                    post="[[user.mail]]" >
+                    author="[[user.name]]"
+                    post="[[user.email]]" >
                 </post-item>
             </template>
         </div>
@@ -99,9 +99,8 @@
                     this.dispatchEvent( new CustomEvent('user-selected',
                         {
                             detail:{
-                                id: current.getAttribute('data-id'),
-                                userName: current.author,
-                                email: current.post,
+                                userName: current.name,
+                                email: current.email,
                             },
                             bubbles:true, composed:true
                         }

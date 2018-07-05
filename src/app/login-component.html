@@ -112,7 +112,9 @@
             },
             users: {
               type: Array,
-              value: []
+              value: [],
+              notify:true,
+              reflectToAttribute:true
             }
           };
         }
@@ -147,7 +149,7 @@
 
         _handleResponse() {
           const response = this.$.http.lastResponse;
-          this.set('users', response);
+          this.set('users', response.filter(item => item !== null ));
           // console.log(response[0].password);
         }
 
