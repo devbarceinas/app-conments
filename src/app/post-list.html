@@ -1,0 +1,51 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="/src/app/post-item.html">
+
+<dom-module id="post-list">
+    <template>
+        <style>
+            :host{
+                display: block;
+            }
+            
+            post-item{
+                --post-item-header-bg-color: purple;
+                --post-item-header-text-color: white;
+            }
+            post-item + post-item{
+                margin-top: 16px;
+            }
+
+        </style>
+
+        <!-- CONPONENT UI  -->
+        <div class="container">
+            <template is="dom-repeat" items="[[list]]" as="post">
+                <post-item
+                    author="[[post.author]]"
+                    title="[[post.title]]"
+                    date="[[post.fecha]]"
+                    post="" >
+                    [[post.body]]
+                </post-item>
+            </template>
+        </div>
+        <!-- END UI  -->
+    </template>
+    <script>
+        (function(){
+
+            class PostList extends Polymer.Element {
+                static get is() { return 'post-list' }
+                static get properties() {
+                    return {
+                        list: Array
+                    }
+                }
+            }
+
+            customElements.define( PostList.is, PostList );
+
+        })();
+    </script>
+</dom-module>

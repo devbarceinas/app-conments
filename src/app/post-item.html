@@ -1,0 +1,122 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+
+<dom-module id="post-item">
+    <template>
+        <style>
+            :host{
+                /* HEADER */
+                --post-item-header-font-size: 14px;
+                --post-item-header-bg-color: #cacaca;
+                --post-item-header-text-color: #333;
+                --post-item-header-border-radius: 6px;
+                /* CONTENT */
+                --post-item-content-font-size: 14px;
+                display: block;
+            }
+            .container{
+                border-radius: var(--post-item-header-border-radius);
+                background:#fafafa;
+                box-shadow: 0 8px 6px -4px rgba(0,0,0, .2), 0 -4px 6px -4px rgba(0,0,0, .2); 
+            }
+            
+            .post__header{
+                display: flex;
+                align-items: center;
+                padding:8px 16px;
+                font-size: var(--post-item-header-font-size);
+                color: var( --post-item-header-text-color );
+                border-radius: var(--post-item-header-border-radius) var(--post-item-header-border-radius) 0 0;
+                background: var( --post-item-header-bg-color );
+                @apply --post-item-header-style
+            }
+            .post__author{
+                flex-grow:2;
+                margin: 0;
+                padding: 0;
+                font-size: 1.1em;
+                font-weight: normal;
+            }
+            .post__date{
+                font-size: .8em;
+            }
+
+            .post__content{
+                padding:16px 16px 24px;
+                font-size: var( --post-item-content-font-size );
+            }
+            .post__content_title{
+                margin-bottom:8px;
+                font-size: 1.16em;
+                font-weight: 500;
+            }
+
+        </style>
+
+        <!-- CONPONENT UI  -->
+        <div class="container">
+            <header class="post__header">
+                <h2 class="post__author">[[author]]</h2>
+                <div class="post__date">[[date]]</div>
+            </header>
+            <article class="post__content">
+                <template is="dom-if" if="[[title]]">
+                    <div class="post__content_title">[[title]]</div>
+                </template>
+                [[post]]
+                <slot></slot>
+            </article>
+        </div>
+        <!-- END UI  -->
+    </template>
+    <script>
+        (function(){
+
+            class PostItem extends Polymer.Element {
+                static get is() { return 'post-item' }
+                static get properties() {
+                    return {
+                        title: String,
+                        author: String,
+                        date: {
+                            type: String,
+                            observer: 'parseDate'
+                        },
+                        monthName:{
+                            type: Array,
+                            value: [
+                                '','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'
+                            ]
+                        },
+                        post: String
+                    }
+                }
+                
+                click() {
+                    this.dispatchEvent( new CustomEvent('click') );
+                }
+
+                parseDate( currentDate, oldDate ) {
+                    let _date;
+                    let newDate = currentDate;
+                    
+                    if(oldDate == currentDate){ return false; }
+
+                    if( newDate.indexOf('-') !== -1 ){
+                        _date = new Date( newDate );
+                        try{
+                            newDate = _date.toLocaleString('en-US',{
+                                timeZone:'UTC'
+                            })
+                        }catch(err){}
+                        _date = newDate.split('/')[0]+'/'+ this.monthName[newDate.split('/')[1]] +'/'+newDate.split('/')[2];
+                        newDate = _date.split(',')[0];
+                    }
+                    this.date = newDate;
+                }
+            }
+
+            customElements.define( PostItem.is, PostItem );
+
+        })();
+    </script>
+</dom-module>
