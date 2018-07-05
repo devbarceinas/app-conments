@@ -6,18 +6,89 @@
   <template>
     <style>
 
+      body{
+          margin: 0;
+          padding: 0;
+      }
+      .post__main_content{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          background: linear-gradient(0deg, #062f4f 80%, #000000 80%);
+      }
+      .page{
+          display: flex;
+          align-self:flex-end;
+          width:100%;
+          height: 90vh;
+          max-width: 900px;
+      }
+      .post__aside{
+          padding: 24px 0 20px 8px;
+          width: 240px;
+      }
+      .page__content{
+          display: flex;
+          flex-direction: column;
+          flex-grow:2;
+          padding: 18px 8px;
+          margin: 0 8px 0 18px;
+          color:#fafafa;
+          border-radius: 8px 8px 0 0;
+          background: #06406d;
+      }
+      .post__list{
+          flex-grow: 2;
+          overflow-y: auto;
+          color:#333;
+          /*background:aqua;*/
+      }
+
       .container {
         display: flex;
         justify-content: center;
         padding-top: 50px;
       }
 
+      .posts {
+        display: none;
+      }
+
+      .container.sessionActive {
+        display: none;
+      }
+
+      .container.sessionActive + .posts {
+        display: block;
+      }
+
     </style>
 
-    <div class="container">
+    <div class="container" id="showPosts">
+      <loader-spinner id="loader_spinner" paused></loader-spinner>
       <login-component
-        on-check-user="_checkUser">
+        on-check-user="_checkUser" users="{{allUsers}}">
       </loginComponent>
+    </div>
+
+    <div class="posts">
+      <div class="post__main_content">
+          <!-- PAG -->
+          <div class="page">
+              <aside class="post__aside">
+                  <user-list id="user_list" list="[[allUsers]]"></user-list>
+              </aside>
+              <div class="page__content">
+                  <div>EL FORMULARIO</div>
+                  <hr>
+                  <div class="post__list">
+                      <post-list id="post_list"></post-list>
+                  </div>
+              </div>
+          </div>
+          <!-- END PAG -->
+      </div>
     </div>
 
   </template>
@@ -30,22 +101,39 @@
         static get is() { return 'app-shell'; }
         static get properties() {
           return {
-
+            sessionUser: {
+              type: Object
+            },
+            slectedUser: {
+              type: Object
+            },
+            allUsers: {
+              type: Array
+            }
           };
         }
 
         _checkUser(event) {
-          let userInput = event.detail.useremail;
-          let passInput = event.detail.password;
-          const userValidate = event.detail.data[0].useremail;
-          const passValidate = event.detail.data[0].password
-          if (userInput === userValidate && passInput === passValidate) {
-            console.log('Usuario correcto');
+          let user = event.detail.data.filter(users => {
+            let hasUser;
+            try{
+              hasUser = users.email === event.detail.useremail ? ( users.password === event.detail.password ? true : false ) : false;
+            }catch(err){ hasUser = false; }
+            return hasUser
+          });
+          if (user.length) {
+            this.sessionUser = user[0];
+            this.selectedUser = user[0];
+            console.info(this.allUsers);
+            this.$.showPosts.classList.toggle('sessionActive');
           } else {
-            console.log('Usuario incorrecto');
+            alert('Usuario o password incorretco');
           }
         }
       }
+
+      //this.$.loader_spinner.setAttribute('paused', true);
+      //this.$.showPosts.classList.toggle('sessionActive');
 
       customElements.define(AppShell.is, AppShell);
 

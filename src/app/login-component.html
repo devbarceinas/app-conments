@@ -123,6 +123,7 @@
         }
 
         login() {
+          console.info("Si llegue");
           this.dispatchEvent(new CustomEvent('check-user', {
             bubbles: true,
             composed: true,
