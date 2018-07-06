@@ -16,14 +16,24 @@
             padding:0;
             margin: 0;
             font-family: 'Roboto', sans-serif;
-            background: silver;
         }
+
+        .back__color {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          background: linear-gradient(0deg, #ffff 80%, #004C99 80%);
+        }
+
     </style>
 </head>
 
 <body>
 
-    <app-shell></app-shell>
+    <div class="back__color">
+      <app-shell></app-shell>
+    </div>
 
     <!-- <script>
         // USER EXAMPLE

@@ -1,5 +1,9 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
 <link rel="import" href="login-component.html">
 
 <dom-module id="app-shell">
@@ -10,12 +14,13 @@
           margin: 0;
           padding: 0;
       }
+
       .post__main_content{
           display: flex;
           align-items: center;
           justify-content: center;
           height: 100vh;
-          background: linear-gradient(0deg, lime 80%, aqua 80%);
+          background: linear-gradient(0deg, #ffff 80%, #004C99 80%);
       }
       .page{
           display: flex;
@@ -38,7 +43,7 @@
           margin: 0 8px 0 18px;
           color:#fafafa;
           border-radius: 8px 8px 0 0;
-          background: #F633FF;
+          background: #EEF4F9;
       }
       .post__list{
           flex-grow: 2;
@@ -68,12 +73,53 @@
         font-size: 1.4em;
       }
 
-    </style>
+      .post__style {
+        color: #000;
+      }
 
+      .post__form {
+        display: flex;
+        justify-content: center;
+        color: #000;
+      }
+
+      .space__items {
+        height: 30px;
+      }
+
+      .button__output {
+        background-color: #0093E2;
+        color: #fff;
+      }
+
+      .logout {
+        display: flex;
+        justify-content: center;
+      }
+
+      .public__button {
+        background-color: #004C99;
+      }
+
+      .form__container {
+        padding: 20px;
+      }
+
+      .button__salir {
+        background-color: #fafafa;
+      }
+
+    </style>
     <div class="container" id="showPosts">
-      <loader-spinner id="loader_spinner" paused></loader-spinner>
+      <loader-spinner
+        id="loader_spinner"
+        paused>
+      </loader-spinner>
       <login-component
-        on-check-user="_checkUser" users="{{allUsers}}">
+        on-check-user="_checkUser"
+        on-login-submit="_loader"
+        users="{{allUsers}}"
+        class="border__alert">
       </loginComponent>
     </div>
 
@@ -82,15 +128,29 @@
           <!-- PAG -->
           <div class="page">
               <aside class="post__aside">
+                  <paper-button class="button__salir" raised>Salir</paper-button>
                   <user-list id="user_list" list="[[allUsers]]" on-user-selected="_userSelected"></user-list>
               </aside>
               <div class="page__content">
                   <template is="dom-if" if="[[showForm]]">
-                    <div>EL FORMULARIO</div>
+                    <div class="post__form">
+                      <strong>
+                        Escribe un nuevo post
+                      </strong>
+                    </div>
+                    <div class="form__container">
+                      <paper-input label="Titulo"></paper-input>
+                      <paper-input label="¿Que estas pensando [[selectedUser.name]]?"></paper-input>
+                      <paper-button class="public__button" raised>Publicar</paper-button>
+                    </div>
                   </template>
-                  <hr>
-                  <div>Post de <strong class="current__user_name">[[selectedUser.name]]</strong></div>
-                  <hr>
+                  <div class="space__items"></div>
+                  <div class="post__style">
+                    <strong class="current__user_name">
+                      Post de [[selectedUser.name]]
+                    </strong>
+                  </div>
+                  <div class="space__items"></div>
                   <div class="post__list">
                       <post-list id="post_list" list="[[selectedUser.posts]]"></post-list>
                   </div>
@@ -127,6 +187,7 @@
         }
 
         _checkUser(event) {
+          var that = this;
           let user = event.detail.data.filter(users => {
             let hasUser;
             try{
@@ -141,8 +202,16 @@
             this.$.showPosts.classList.toggle('sessionActive');
             console.info('allUsers', this.allUsers);
           } else {
-            alert('Usuario o password incorretco');
+            setTimeout(function(){
+              console.info('error')
+              that._loader();
+            }, 2000);
+            alert('Email o password incorrecto!!');
           }
+        }
+
+        closeDialog() {
+          this.$.abrirSesamo.close();
         }
 
         _userSelected(event) {
@@ -156,6 +225,10 @@
             console.info('Show Form', this.sessionUser.email, this.selectedUser.email );
             show = this.sessionUser.email === this.selectedUser.email? true : false; }catch(err){}
           return show;
+        }
+
+        _loader() {
+          this.$.loader_spinner[ this.$.loader_spinner.getAttribute('paused')? 'removeAttribute' : 'setAttribute' ]('paused','');
         }
 
       } // end

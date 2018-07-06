@@ -16,9 +16,9 @@
             .container{
                 border-radius: var(--post-item-header-border-radius);
                 background:#fafafa;
-                box-shadow: 0 8px 6px -4px rgba(0,0,0, .2), 0 -4px 6px -4px rgba(0,0,0, .2); 
+                box-shadow: 0 8px 6px -4px rgba(0,0,0, .3), 0 -4px 6px -4px rgba(0,0,0, .2);
             }
-            
+
             .post__header{
                 display: flex;
                 align-items: center;
@@ -90,7 +90,7 @@
                         post: String
                     }
                 }
-                
+
                 click() {
                     this.dispatchEvent( new CustomEvent('click') );
                 }
@@ -98,7 +98,7 @@
                 parseDate( currentDate, oldDate ) {
                     let _date;
                     let newDate = currentDate;
-                    
+
                     if(oldDate == currentDate){ return false; }
 
                     if( newDate.indexOf('-') !== -1 ){
