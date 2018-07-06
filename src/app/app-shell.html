@@ -202,11 +202,8 @@
             this.$.showPosts.classList.toggle('sessionActive');
             console.info('allUsers', this.allUsers);
           } else {
-            setTimeout(function(){
-              console.info('error')
-              that._loader();
-            }, 2000);
             alert('Email o password incorrecto!!');
+            that._loader();
           }
         }
 
@@ -228,9 +225,10 @@
         }
 
         _loader() {
-          this.$.loader_spinner[ this.$.loader_spinner.getAttribute('paused')? 'removeAttribute' : 'setAttribute' ]('paused','');
+          this.$.loader_spinner[
+            this.$.loader_spinner.hasAttribute('paused')?
+            'removeAttribute':'setAttribute' ]('paused', '');
         }
-
       } // end
 
       //this.$.loader_spinner.setAttribute('paused', true);
