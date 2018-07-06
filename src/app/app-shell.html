@@ -3,6 +3,7 @@
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 
 <link rel="import" href="login-component.html">
 
@@ -107,15 +108,28 @@
 
       .button__salir {
         background-color: #fafafa;
+        margin-bottom: 10px;
       }
 
     </style>
+
+    <iron-ajax
+      id="postMessage"
+      method="POST"
+      url="https://posts-services.herokuapp.com/posts"
+      handle-as="json"
+      content-type="application/json"
+      last-response="_handleResponse">
+    </iron-ajax>
+
+    <loader-spinner
+      id="loader_spinner"
+      paused>
+    </loader-spinner>
+
     <div class="container" id="showPosts">
-      <loader-spinner
-        id="loader_spinner"
-        paused>
-      </loader-spinner>
       <login-component
+        id="login_component"
         on-check-user="_checkUser"
         on-login-submit="_loader"
         users="{{allUsers}}"
@@ -128,7 +142,7 @@
           <!-- PAG -->
           <div class="page">
               <aside class="post__aside">
-                  <paper-button class="button__salir" raised>Salir</paper-button>
+                  <paper-button class="button__salir" on-click="_closeSession" raised>Salir</paper-button>
                   <user-list id="user_list" list="[[allUsers]]" on-user-selected="_userSelected"></user-list>
               </aside>
               <div class="page__content">
@@ -139,9 +153,9 @@
                       </strong>
                     </div>
                     <div class="form__container">
-                      <paper-input label="Titulo"></paper-input>
-                      <paper-input label="¿Que estas pensando [[selectedUser.name]]?"></paper-input>
-                      <paper-button class="public__button" raised>Publicar</paper-button>
+                      <paper-input label="Titulo" id="title_form"></paper-input>
+                      <paper-input label="¿Que estas pensando [[selectedUser.name]]?" id="posts_form"></paper-input>
+                      <paper-button class="public__button" on-click="_save" raised>Publicar</paper-button>
                     </div>
                   </template>
                   <div class="space__items"></div>
@@ -200,6 +214,8 @@
             this.selectedUser = user[0];
             this.$.user_list.selectedId = user[0].email;
             this.$.showPosts.classList.toggle('sessionActive');
+            that._loader();
+            this.$.login_component.clean();
             console.info('allUsers', this.allUsers);
           } else {
             alert('Email o password incorrecto!!');
@@ -207,8 +223,8 @@
           }
         }
 
-        closeDialog() {
-          this.$.abrirSesamo.close();
+        _closeSession() {
+          this.$.showPosts.classList.toggle('sessionActive');
         }
 
         _userSelected(event) {
@@ -226,8 +242,35 @@
 
         _loader() {
           this.$.loader_spinner[
-            this.$.loader_spinner.hasAttribute('paused')?
+            this.$.loader_spinner.hasAttribute('paused') ?
             'removeAttribute':'setAttribute' ]('paused', '');
+        }
+
+        _save() {
+          this.shadowRoot.getElementById('title_form').value;
+
+          this.$.postMessage.body = {
+            "user": {
+            	"email": this.sessionUser.email
+            },
+            "post": {
+            	"title": this.shadowRoot.getElementById('title_form').value,
+            	"body": this.shadowRoot.getElementById('posts_form').value
+            }
+          };
+          console.info(this.$.postMessage.params);
+          this.$.postMessage.generateRequest();
+        }
+
+        _handleResponse(event) {
+          //this.set('users', this.$.postMessage.lastResponse.filter(item => item !== null));
+          this.push('selectedUser.posts', {
+            "title": this.shadowRoot.getElementById('title_form').value,
+            "body": this.shadowRoot.getElementById('posts_form').value,
+            "date": "2018-07-03T22:48:45.553Z"
+          });
+
+          console.info('Respuesta del formulario', event);
         }
       } // end
 
